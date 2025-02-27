@@ -1,27 +1,27 @@
-Name:           php844
+Name:           __PACKAGE_NAME__
 Version:        __VERSION__
 Release:        __RELEASE__%{?dist}
 Summary:        Test installation package
 License:        MIT
 URL:            https://example.com
-Source0:        php-8.4.4.tar.gz
+Source0:        __TAR_FILE__
 BuildArch:      noarch
 
 %description
-This package extracts files to /var/opt/tools when installed.
+This package extracts files to __INSTALL_DIR__ when installed.
 
 %prep
-%setup -q
+%setup -q -n php-8.4.4
 
 %build
 # No compilation needed
 
 %install
-mkdir -p %{buildroot}/var/opt/tools
-cp -r * %{buildroot}/var/opt/tools/
+mkdir -p %{buildroot}__INSTALL_DIR__
+cp -r * %{buildroot}__INSTALL_DIR__/
 
 %files
-/var/opt/tools/
+/__INSTALL_DIR__/
 
 %changelog
 * __DATE__ Jenkins Pipeline - __VERSION__-__RELEASE__

@@ -61,7 +61,7 @@ pipeline {
                     cp -r * %{buildroot}${INSTALL_DIR}/
 
                     %files
-                    ${INSTALL_DIR}/
+                    \${INSTALL_DIR}/
 
                     %changelog
                     * $(date +"%a %b %d %Y") Jenkins Pipeline - ${VERSION}-${RELEASE}

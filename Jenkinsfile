@@ -57,8 +57,8 @@ pipeline {
                     # No compilation needed
 
                     %install
-                    mkdir -p %{buildroot}${INSTALL_DIR}
-                    cp -r * %{buildroot}${INSTALL_DIR}/
+                    mkdir -p %{buildroot}\${INSTALL_DIR}
+                    cp -r * %{buildroot}\${INSTALL_DIR}/
 
                     %files
                     \${INSTALL_DIR}/

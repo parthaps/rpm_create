@@ -35,38 +35,39 @@ pipeline {
         stage('Create Spec File') {
             steps {
                 script {
-                        sh '''
-                    cat > ~/rpmbuild/SPECS/testinstall.spec <<EOF
-                    Name:           testinstall
-                    Version:        1.0
-                    Release:        1%{?dist}
-                    Summary:        Test installation package
-                    License:        MIT
-                    URL:            https://example.com
-                    Source0:        testinstall.tar.gz
-                    BuildArch:      noarch
+                    sh """
+                    SPEC_FILE=~/rpmbuild/SPECS/${PACKAGE_NAME}.spec
+                    cat > "$SPEC_FILE" <<EOF
+Name:           ${PACKAGE_NAME}
+Version:        ${VERSION}
+Release:        ${RELEASE}%{?dist}
+Summary:        Test installation package
+License:        MIT
+URL:            https://example.com
+Source0:        ${TAR_FILE}
+BuildArch:      noarch
 
-                    %description
-                    This package extracts files to /var/opt/tools when installed.
+%description
+This package extracts files to ${INSTALL_DIR} when installed.
 
-                    %prep
-                    %setup -q
+%prep
+%setup -q
 
-                    %build
-                    # No compilation needed
+%build
+# No compilation needed
 
-                    %install
-                    mkdir -p %{buildroot}/var/opt/tools
-                    cp -r * %{buildroot}/var/opt/tools/
+%install
+mkdir -p %{buildroot}${INSTALL_DIR}
+cp -r * %{buildroot}${INSTALL_DIR}/
 
-                    %files
-                    /var/opt/tools/
+%files
+${INSTALL_DIR}/
 
-                    %changelog
-                    * $(date +"%a %b %d %Y") Jenkins Pipeline - 1.0-1
-                    - Initial RPM build
-                    EOF
-                    '''
+%changelog
+* $(date +"%a %b %d %Y") Jenkins Pipeline - ${VERSION}-${RELEASE}
+- Initial RPM build
+EOF
+                    """
                 }
             }
         }

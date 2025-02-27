@@ -24,6 +24,7 @@ pipeline {
                 sh '''
                 rpmdev-setuptree --rmpath ${RPMBUILD_DIR}
                 mkdir -p ${RPMBUILD_DIR}/SOURCES/
+                mkdir -p ${RPMBUILD_DIR}/SPECS/
                 cp ${WORKSPACE}/${TAR_FILE} ${RPMBUILD_DIR}/SOURCES/
                 '''
             }

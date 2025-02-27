@@ -22,6 +22,7 @@ pipeline {
         stage('Setup RPM Build Environment') {
             steps {
                 sh '''
+                mkdir -p ${RPMBUILD_DIR}
                 rpmdev-setuptree --rmpath ${RPMBUILD_DIR}
                 mkdir -p ${RPMBUILD_DIR}/SOURCES/
                 mkdir -p ${RPMBUILD_DIR}/SPECS/

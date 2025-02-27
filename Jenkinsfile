@@ -35,20 +35,19 @@ pipeline {
         stage('Create Spec File') {
             steps {
                 script {
-                    sh """
-                    SPEC_FILE=~/rpmbuild/SPECS/\${PACKAGE_NAME}.spec
-                    cat > "$SPEC_FILE" <<EOF
-                    Name:           \${PACKAGE_NAME}
-                    Version:        \${VERSION}
-                    Release:        \${RELEASE}%{?dist}
+                        sh '''
+                    cat > ~/rpmbuild/SPECS/testinstall.spec <<EOF
+                    Name:           testinstall
+                    Version:        1.0
+                    Release:        1%{?dist}
                     Summary:        Test installation package
                     License:        MIT
                     URL:            https://example.com
-                    Source0:        \${TAR_FILE}
+                    Source0:        testinstall.tar.gz
                     BuildArch:      noarch
 
                     %description
-                    This package extracts files to \${INSTALL_DIR} when installed.
+                    This package extracts files to /var/opt/tools when installed.
 
                     %prep
                     %setup -q
@@ -57,17 +56,17 @@ pipeline {
                     # No compilation needed
 
                     %install
-                    mkdir -p %{buildroot}\${INSTALL_DIR}
-                    cp -r * %{buildroot}\${INSTALL_DIR}/
+                    mkdir -p %{buildroot}/var/opt/tools
+                    cp -r * %{buildroot}/var/opt/tools/
 
                     %files
-                    \${INSTALL_DIR}/
+                    /var/opt/tools/
 
                     %changelog
-                    * \$(date +"%a %b %d %Y") Jenkins Pipeline - \${VERSION}-\${RELEASE}
+                    * $(date +"%a %b %d %Y") Jenkins Pipeline - 1.0-1
                     - Initial RPM build
                     EOF
-                    """
+                    '''
                 }
             }
         }

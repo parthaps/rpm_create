@@ -18,14 +18,6 @@ pipeline {
             }
         }
 
-        stage('Install Required Tools') {
-            steps {
-                sh '''
-                sudo dnf install -y rpm-build rpmdevtools
-                '''
-            }
-        }
-
         stage('Setup RPM Build Environment') {
             steps {
                 sh '''

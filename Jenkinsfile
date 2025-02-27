@@ -33,8 +33,11 @@ pipeline {
                 sh '''
                 cp $WORKSPACE/$SPEC_TEMPLATE ~/rpmbuild/SPECS/$SPEC_FILE
 
+                sed -i "s|__PACKAGE_NAME__|$PACKAGE_NAME|g" ~/rpmbuild/SPECS/$SPEC_FILE
                 sed -i "s|__VERSION__|$VERSION|g" ~/rpmbuild/SPECS/$SPEC_FILE
                 sed -i "s|__RELEASE__|$RELEASE|g" ~/rpmbuild/SPECS/$SPEC_FILE
+                sed -i "s|__INSTALL_DIR__|$INSTALL_DIR|g" ~/rpmbuild/SPECS/$SPEC_FILE
+                sed -i "s|__TAR_FILE__|$TAR_FILE|g" ~/rpmbuild/SPECS/$SPEC_FILE
                 sed -i "s|__DATE__|$(date +"%a %b %d %Y")|g" ~/rpmbuild/SPECS/$SPEC_FILE
                 '''
             }

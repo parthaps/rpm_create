@@ -21,7 +21,7 @@ mkdir -p %{buildroot}__INSTALL_DIR__
 cp -r * %{buildroot}__INSTALL_DIR__/
 
 %files
-/__INSTALL_DIR__/
+__INSTALL_DIR__/
 
 %changelog
 * __DATE__ Jenkins Pipeline - __VERSION__-__RELEASE__

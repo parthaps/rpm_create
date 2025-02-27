@@ -36,19 +36,19 @@ pipeline {
             steps {
                 script {
                     sh """
-                    SPEC_FILE=~/rpmbuild/SPECS/${PACKAGE_NAME}.spec
+                    SPEC_FILE=~/rpmbuild/SPECS/\${PACKAGE_NAME}.spec
                     cat > "$SPEC_FILE" <<EOF
-                    Name:           ${PACKAGE_NAME}
-                    Version:        ${VERSION}
-                    Release:        ${RELEASE}%{?dist}
+                    Name:           \${PACKAGE_NAME}
+                    Version:        \${VERSION}
+                    Release:        \${RELEASE}%{?dist}
                     Summary:        Test installation package
                     License:        MIT
                     URL:            https://example.com
-                    Source0:        ${TAR_FILE}
+                    Source0:        \${TAR_FILE}
                     BuildArch:      noarch
 
                     %description
-                    This package extracts files to ${INSTALL_DIR} when installed.
+                    This package extracts files to \${INSTALL_DIR} when installed.
 
                     %prep
                     %setup -q

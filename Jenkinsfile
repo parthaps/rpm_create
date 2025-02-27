@@ -64,7 +64,7 @@ pipeline {
                     \${INSTALL_DIR}/
 
                     %changelog
-                    * $(date +"%a %b %d %Y") Jenkins Pipeline - ${VERSION}-${RELEASE}
+                    * \$(date +"%a %b %d %Y") Jenkins Pipeline - \${VERSION}-\${RELEASE}
                     - Initial RPM build
                     EOF
                     """

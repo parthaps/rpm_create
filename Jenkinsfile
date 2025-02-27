@@ -35,7 +35,7 @@ pipeline {
         stage('Create Spec File') {
             steps {
                 script {
-                    sh '''
+                    sh """
                     SPEC_FILE=~/rpmbuild/SPECS/${PACKAGE_NAME}.spec
                     cat > "$SPEC_FILE" <<EOF
                     Name:           ${PACKAGE_NAME}
@@ -67,7 +67,7 @@ pipeline {
                     * $(date +"%a %b %d %Y") Jenkins Pipeline - ${VERSION}-${RELEASE}
                     - Initial RPM build
                     EOF
-                    '''
+                    """
                 }
             }
         }

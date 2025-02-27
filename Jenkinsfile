@@ -53,7 +53,7 @@ pipeline {
 
         stage('Archive RPM') {
             steps {
-                archiveArtifacts artifacts: '~/rpmbuild/RPMS/noarch/*.rpm', fingerprint: true
+                archiveArtifacts artifacts: 'rpmbuild/RPMS/noarch/*.rpm', fingerprint: true
             }
         }
     }

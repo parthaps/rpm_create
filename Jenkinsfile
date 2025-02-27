@@ -7,28 +7,32 @@ pipeline {
         RELEASE = "1"
         INSTALL_DIR = "/var/opt/tools"
         TAR_FILE = "php-8.4.4.tar.gz"
+        SPEC_TEMPLATE = "testinstall.spec.template"
+        SPEC_FILE = "testinstall.spec"
     }
 
     stages {
-
-        stage('Setup RPM Build Environment') {
+        stage('Checkout Code') {
             steps {
-                script {
-                    sh '''
-                    rpmdev-setuptree
-                    mkdir -p ~/rpmbuild/SOURCES/
-                    '''
-                }
+                checkout scm  // Ensures the spec file is available from Git
             }
         }
 
-        stage('Copy Source Files') {
+        stage('Install Required Tools') {
             steps {
-                script {
-                    sh '''
-                    cp ${WORKSPACE}/${TAR_FILE} ~/rpmbuild/SOURCES/
-                    '''
-                }
+                sh '''
+                sudo dnf install -y rpm-build rpmdevtools
+                '''
+            }
+        }
+
+        stage('Setup RPM Build Environment') {
+            steps {
+                sh '''
+                rpmdev-setuptree
+                mkdir -p ~/rpmbuild/SOURCES/
+                cp $WORKSPACE/$TAR_FILE ~/rpmbuild/SOURCES/
+                '''
             }
         }
 
@@ -46,17 +50,15 @@ pipeline {
 
         stage('Build RPM') {
             steps {
-                script {
-                    sh '''
-                    rpmbuild -ba ~/rpmbuild/SPECS/${PACKAGE_NAME}.spec
-                    '''
-                }
+                sh '''
+                rpmbuild -ba ~/rpmbuild/SPECS/$SPEC_FILE
+                '''
             }
         }
 
         stage('Archive RPM') {
             steps {
-                archiveArtifacts artifacts: 'rpmbuild/RPMS/noarch/*.rpm', fingerprint: true
+                archiveArtifacts artifacts: '~/rpmbuild/RPMS/noarch/*.rpm', fingerprint: true
             }
         }
     }

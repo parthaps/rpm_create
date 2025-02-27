@@ -1,10 +1,10 @@
-Name:           testinstall
+Name:           php844
 Version:        __VERSION__
 Release:        __RELEASE__%{?dist}
 Summary:        Test installation package
 License:        MIT
 URL:            https://example.com
-Source0:        testinstall.tar.gz
+Source0:        php-8.4.4.tar.gz
 BuildArch:      noarch
 
 %description

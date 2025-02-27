@@ -32,43 +32,15 @@ pipeline {
             }
         }
 
-        stage('Create Spec File') {
+        stage('Prepare Spec File') {
             steps {
-                script {
-                    sh """
-                    SPEC_FILE=~/rpmbuild/SPECS/${PACKAGE_NAME}.spec
-                    cat > "$SPEC_FILE" <<EOF
-Name:           ${PACKAGE_NAME}
-Version:        ${VERSION}
-Release:        ${RELEASE}%{?dist}
-Summary:        Test installation package
-License:        MIT
-URL:            https://example.com
-Source0:        ${TAR_FILE}
-BuildArch:      noarch
+                sh '''
+                cp $WORKSPACE/$SPEC_TEMPLATE ~/rpmbuild/SPECS/$SPEC_FILE
 
-%description
-This package extracts files to ${INSTALL_DIR} when installed.
-
-%prep
-%setup -q
-
-%build
-# No compilation needed
-
-%install
-mkdir -p %{buildroot}${INSTALL_DIR}
-cp -r * %{buildroot}${INSTALL_DIR}/
-
-%files
-${INSTALL_DIR}/
-
-%changelog
-* $(date +"%a %b %d %Y") Jenkins Pipeline - ${VERSION}-${RELEASE}
-- Initial RPM build
-EOF
-                    """
-                }
+                sed -i "s|__VERSION__|$VERSION|g" ~/rpmbuild/SPECS/$SPEC_FILE
+                sed -i "s|__RELEASE__|$RELEASE|g" ~/rpmbuild/SPECS/$SPEC_FILE
+                sed -i "s|__DATE__|$(date +"%a %b %d %Y")|g" ~/rpmbuild/SPECS/$SPEC_FILE
+                '''
             }
         }
 

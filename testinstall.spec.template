@@ -1,0 +1,28 @@
+Name:           testinstall
+Version:        __VERSION__
+Release:        __RELEASE__%{?dist}
+Summary:        Test installation package
+License:        MIT
+URL:            https://example.com
+Source0:        testinstall.tar.gz
+BuildArch:      noarch
+
+%description
+This package extracts files to /var/opt/tools when installed.
+
+%prep
+%setup -q
+
+%build
+# No compilation needed
+
+%install
+mkdir -p %{buildroot}/var/opt/tools
+cp -r * %{buildroot}/var/opt/tools/
+
+%files
+/var/opt/tools/
+
+%changelog
+* __DATE__ Jenkins Pipeline - __VERSION__-__RELEASE__
+- Initial RPM build

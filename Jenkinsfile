@@ -10,6 +10,8 @@ pipeline {
         SPEC_TEMPLATE = "testinstall.spec.template"
         SPEC_FILE = "testinstall.spec"
         RPMBUILD_DIR = "${WORKSPACE}/rpmbuild"
+        ARTIFACTORY_URL = "https://testartif.jfrog.io/artifactory/thirdparty-generic-local/php-8.4.4.tar.gz"
+        ARTIFACTORY_UPLOAD_URL = "https://testartif.jfrog.io/artifactory/api/generic/created_rpm"
     }
 
     stages {
@@ -21,13 +23,15 @@ pipeline {
 
         stage('Setup RPM Build Environment') {
             steps {
-                sh '''
-                mkdir -p ${RPMBUILD_DIR}
-                rpmdev-setuptree --rmpath ${RPMBUILD_DIR}
-                mkdir -p ${RPMBUILD_DIR}/SOURCES/
-                mkdir -p ${RPMBUILD_DIR}/SPECS/
-                cp ${WORKSPACE}/${TAR_FILE} ${RPMBUILD_DIR}/SOURCES/
-                '''
+                withCredentials([usernamePassword(credentialsId: 'artiftoken', usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_PASSWORD')]) {
+                    sh '''
+                    mkdir -p ${RPMBUILD_DIR}
+                    rpmdev-setuptree --rmpath ${RPMBUILD_DIR}
+                    mkdir -p ${RPMBUILD_DIR}/SOURCES/
+                    mkdir -p ${RPMBUILD_DIR}/SPECS/
+                    curl -u ${ARTIFACTORY_USER}:${ARTIFACTORY_PASSWORD} -o ${RPMBUILD_DIR}/SOURCES/${TAR_FILE} ${ARTIFACTORY_URL}
+                    '''
+                }
             }
         }
 
@@ -54,19 +58,25 @@ pipeline {
             }
         }
 
-        stage('Archive RPM') {
+        stage('Upload RPM to Artifactory') {
             steps {
-                archiveArtifacts artifacts: '${RPMBUILD_DIR}/RPMS/noarch/*.rpm', fingerprint: true
+                withCredentials([usernamePassword(credentialsId: 'artiftoken', usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_PASSWORD')]) {
+                    sh '''
+                    for rpm in ${RPMBUILD_DIR}/RPMS/noarch/*.rpm; do
+                        curl -u ${ARTIFACTORY_USER}:${ARTIFACTORY_PASSWORD} -T $rpm ${ARTIFACTORY_UPLOAD_URL}/$(basename $rpm)
+                    done
+                    '''
+                }
             }
         }
     }
 
     post {
         success {
-            echo "RPM build completed successfully!"
+            echo "RPM build and upload completed successfully!"
         }
         failure {
-            echo "RPM build failed!"
+            echo "RPM build or upload failed!"
         }
     }
 }
